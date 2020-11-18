@@ -1,0 +1,33 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  input[type="checkbox"] {
+    cursor: pointer;
+  }
+  .todo-item {
+    @apply py-1;
+
+    &__text {
+      @apply text-sm text-gray-700 ml-2;
+    }
+
+    &__wrapper {
+      @apply flex justify-between items-center;
+    }
+  }
+
+  .icon-more {
+    width: 24px;
+    min-width: 24px;
+    margin-left: 20px;
+    opacity: 0.3;
+    cursor: pointer;
+    display: inline-block;
+
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}
