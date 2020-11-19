@@ -1,3 +1,3 @@
 ### React Todo Application
 
-- Tailwind for styling
+-   Tailwind for styling
