@@ -7,7 +7,8 @@ import { uniqueId } from "lodash";
 const App = () => {
     const [todos, setTodos] = useState([]);
     const [todo, setTodo] = useState("");
-    // const [todoID] = useState(uniqueId())
+    const [uncompleted, setUncompleted] = useState([]);
+    const [hideCompleted, setHideCompleted] = useState(true);
 
     const handleTaskChange = (e) => {
         setTodo(e.target.value);
@@ -15,13 +16,12 @@ const App = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // console.log(todo)
         setTodos([...todos, { id: uniqueId(), task: todo, completed: false }]);
         setTodo("");
     };
 
     useEffect(() => {
-        console.table(todos);
+        setUncompleted(todos.filter((task) => task.completed === false));
     }, [todos]);
 
     const handleDelete = (id) => {
@@ -42,10 +42,28 @@ const App = () => {
         );
     };
 
+    const handleVisibilityChange = () => {
+        setHideCompleted(!hideCompleted);
+    };
+
     return (
         <div className="container [ p-5 m-auto ]">
-            <div className="header text-2xl">
-                <h3>Todo</h3>
+            <div className="flex justify-between items-end">
+                <div className="header text-2xl">
+                    <h3 className="leading-none">Todo</h3>
+                </div>
+                <div className="text-xs">
+                    <input
+                        id="hideCompleted"
+                        type="checkbox"
+                        checked={!hideCompleted}
+                        className="mr-1 align-middle"
+                        onChange={handleVisibilityChange}
+                    />
+                    <label htmlFor="hideCompleted" className="align-middle">
+                        Show completed
+                    </label>
+                </div>
             </div>
 
             <div className="todo-input [ mt-5 ]">
@@ -61,9 +79,9 @@ const App = () => {
             </div>
 
             <div className="mt-5">
-                {todos.length ? (
+                {uncompleted.length || !hideCompleted ? (
                     <>
-                        <ul>
+                        <ul className="mb-6">
                             {todos.map((todo, index) => {
                                 if (todo.completed !== true) {
                                     return (
@@ -110,38 +128,52 @@ const App = () => {
                                         </li>
                                     );
                                 }
+                                return null;
                             })}
                         </ul>
-                        <hr className="mt-4" />
-                        <ul>
-                            {todos.map((todo, index) => {
-                                if (todo.completed === true) {
-                                    return (
-                                        <li className="todo-item" key={index}>
-                                            <div className="todo-item__wrapper">
-                                                <div className="flex items-center">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={todo.completed}
-                                                        onChange={() =>
-                                                            handleComplete(
-                                                                todo.id
-                                                            )
-                                                        }
-                                                    />
-                                                    <span className="todo-item__text">
-                                                        {todo.task}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    );
-                                }
-                            })}
-                        </ul>
+
+                        {!hideCompleted && (
+                            <>
+                                <div className="text-gray-600 text-xs p-1 bg-gray-100 rounded-sm">
+                                    Completed
+                                </div>
+                                <ul className="opacity-50">
+                                    {todos.map((todo, index) => {
+                                        if (todo.completed === true) {
+                                            return (
+                                                <li
+                                                    className="todo-item"
+                                                    key={index}
+                                                >
+                                                    <div className="todo-item__wrapper">
+                                                        <div className="flex items-center">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={
+                                                                    todo.completed
+                                                                }
+                                                                onChange={() =>
+                                                                    handleComplete(
+                                                                        todo.id
+                                                                    )
+                                                                }
+                                                            />
+                                                            <span className="todo-item__text">
+                                                                {todo.task}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        }
+                                        return null;
+                                    })}
+                                </ul>
+                            </>
+                        )}
                     </>
                 ) : (
-                    <div className="flex justify-center mt-32">
+                    <div className="flex justify-center mt-24">
                         <div className="text-center">
                             <TickIcon className="m-auto" />
                             <p className="mt-4 text-gray-700">
