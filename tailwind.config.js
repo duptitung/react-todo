@@ -26,6 +26,9 @@ module.exports = {
                 800: "#2d3748",
                 900: "#1a202c",
             },
+            red: {
+                600: "red",
+            },
         },
         spacing: {
             px: "1px",

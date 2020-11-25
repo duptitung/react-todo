@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { uniqueId } from "lodash";
+import { v4 as uuid } from "uuid";
 import "./assets/sass/main.scss";
 import TodoForm from "./components/TodoForm";
 import NoTodo from "./components/NoTodo";
@@ -18,16 +18,30 @@ const App = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setTodos([...todos, { id: uniqueId(), task: todo, completed: false }]);
+        setTodos([...todos, { id: uuid(), task: todo, completed: false }]);
         setTodo("");
     };
 
     useEffect(() => {
+        if (localStorage.getItem("todos") === null) {
+            localStorage.setItem("todos", JSON.stringify([]));
+        } else {
+            let localTodos = JSON.parse(localStorage.getItem("todos"));
+            setTodos(localTodos);
+        }
+    }, []);
+
+    useEffect(() => {
         setUncompleted(todos.filter((task) => task.completed === false));
+        localStorage.setItem("todos", JSON.stringify(todos));
     }, [todos]);
 
     const handleDelete = (id) => {
         setTodos(todos.filter((todo) => todo.id !== id));
+    };
+
+    const handleClearCompleted = () => {
+        setTodos(todos.filter((todo) => todo.completed !== true));
     };
 
     const handleComplete = (id) => {
@@ -71,6 +85,7 @@ const App = () => {
                             <CompletedTodos
                                 todos={todos}
                                 handleComplete={handleComplete}
+                                handleClearCompleted={handleClearCompleted}
                             />
                         )}
                     </>
